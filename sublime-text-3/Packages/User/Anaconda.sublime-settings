@@ -1,0 +1,7 @@
+{
+    "complete_parameters": true,
+    "complete_all_parameters": true,
+    "anaconda_linter_phantoms": true,
+    "pep257": true,
+    "anaconda_linter_phantoms_theme": "devcarpet"
+}
