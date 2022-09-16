@@ -80,3 +80,39 @@ sudo apt update
 
 sudo apt-get install terraform
 ```
+
+### Ansible
+
+```
+pip install ansible
+```
+
+### Cloud
+
+#### Azure
+
+```
+sudo apt-get update
+sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
+
+curl -sL https://packages.microsoft.com/keys/microsoft.asc |
+    gpg --dearmor |
+    sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
+Add the Azure CLI software repository:
+
+AZ_REPO=$(lsb_release -cs)
+echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" |
+    sudo tee /etc/apt/sources.list.d/azure-cli.list
+
+
+sudo apt-get update
+sudo apt-get install azure-cli
+```
+
+#### AWS
+
+```
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+```
