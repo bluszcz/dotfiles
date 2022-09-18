@@ -1,4 +1,4 @@
-- name: My first play
+- name: Provision basic cloud tools
   hosts: all
   tasks:
     - name: Check eksctls
@@ -13,12 +13,12 @@
       stat:
         path: /usr/local/bin/aws
       register: exst_aws
-    - name: Confirm  
-      debug:
-        msg: "The file or directory exists"
-      when: exst_eksctl.stat.exists 
-    - name: Ping my hosts
-      ansible.builtin.ping:
+    # - name: Confirm  
+    #   debug:
+    #     msg: "The file or directory exists"
+    #   when: exst_eksctl.stat.exists 
+    # - name: Ping my hosts52.91.40.72
+    #   ansible.builtin.ping:
     - name: Install eksctl
       ansible.builtin.script: provision.sh
       when: not exst_eksctl.stat.exists
@@ -28,7 +28,7 @@
     - name: Install aws
       ansible.builtin.script: prov_aws.sh
       when: not exst_aws.stat.exists
-    - name: Print message
-      ansible.builtin.debug:
-        msg: Hello world
+    # - name: Print message
+    #   ansible.builtin.debug:
+    #     msg: Hello world
 
