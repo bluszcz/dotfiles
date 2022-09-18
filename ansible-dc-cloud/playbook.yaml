@@ -1,0 +1,34 @@
+- name: My first play
+  hosts: all
+  tasks:
+    - name: Check eksctls
+      stat:
+        path: /usr/local/bin/eksctl
+      register: exst_eksctl
+    - name: Check kubectl
+      stat:
+        path: /usr/local/bin/kubectl
+      register: exst_kubectl
+    - name: Check aws
+      stat:
+        path: /usr/local/bin/aws
+      register: exst_aws
+    - name: Confirm  
+      debug:
+        msg: "The file or directory exists"
+      when: exst_eksctl.stat.exists 
+    - name: Ping my hosts
+      ansible.builtin.ping:
+    - name: Install eksctl
+      ansible.builtin.script: provision.sh
+      when: not exst_eksctl.stat.exists
+    - name: Install kubectl
+      ansible.builtin.script: prov_kubectl.sh
+      when: not exst_kubectl.stat.exists
+    - name: Install aws
+      ansible.builtin.script: prov_aws.sh
+      when: not exst_aws.stat.exists
+    - name: Print message
+      ansible.builtin.debug:
+        msg: Hello world
+

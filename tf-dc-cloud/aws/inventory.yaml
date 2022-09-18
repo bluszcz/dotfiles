@@ -1,0 +1,4 @@
+cloud:
+  hosts:
+    aws:
+      ansible_host: 192.0.2.140
