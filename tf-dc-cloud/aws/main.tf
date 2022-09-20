@@ -62,6 +62,28 @@ resource "aws_subnet" "my_subnet" {
   }
 }
 
+
+resource "aws_subnet" "my_cluster_subnet1" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "172.16.12.0/24"
+  availability_zone = "us-east-1b"
+  map_public_ip_on_launch = true
+  tags = {
+    Name = "tf-cluster1"
+  }
+}
+
+resource "aws_subnet" "my_cluster_subnet2" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "172.16.14.0/24"
+  availability_zone = "us-east-1c"
+  map_public_ip_on_launch = true
+  tags = {
+    Name = "tf-cluster2"
+  }
+
+
+}
 resource "aws_key_pair" "deployer" {
   key_name   = "aws_key"
   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDYrqC65QVnSPJo1mYs5nigrDlDP3ExNiZgl3Qxv084ZlC2ybFkRzzmJA/1axnS3XWvj4FNVlpHhzUHkUQ6MYxrDTmCAWde8zkpMT7P2jOGUtKzRgLXJcxPG9zvnM/ypQlM/kshlk6mEtBG4C8KBE8UHFQld3/b2g43O/wUa4cw4Gqm6Cr4VlzDL1jut3jHjdEXIverCRZMK8h6DYgZpZwBSOVDZX3suylSdXJ7Bqs0fBjFB4xPXPmyfzRGosPkfN+mVfuTm5wsI20wapZ2rX7n0Q5k/ZSDzDaZdN+Y92SQJbeJNB2qDVZPN5Mq6Ep7kiZ1ENW5YvlEz0GqUi/EIef2CwVcSMYVymiP0cGrXuAc6Hhiqh/mfNOHjpAe8oKVfbeN3fzr6rdWPIE0lmW5+m00VmOLg7ZvkG5Uaff3+3+Wz6NWm0IATzdB/xJJ4IINSYIfC07+pKeNeRx7iXFo2XEyxKdIIP2XikbadlMlHAGf5qDkjYJvQaDt52v4tasfIm8= bluszcz@slim"
@@ -101,9 +123,45 @@ associate_public_ip_address = true
   tags = {
     Name = "vm-dev"
   }
+}
+resource "aws_iam_role" "example" {
+  name = "eks-cluster-example"
+
+  assume_role_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "eks.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+POLICY
+}
+
+resource "aws_iam_role_policy_attachment" "example-AmazonEKSClusterPolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+  role       = aws_iam_role.example.name
+}
+
+# Optionally, enable Security Groups for Pods
+# Reference: https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html
+resource "aws_iam_role_policy_attachment" "example-AmazonEKSVPCResourceController" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
+  role       = aws_iam_role.example.name
+}
+resource "aws_eks_cluster" "dev-cluster" {
+  name     = "dev-cluster"
+  role_arn = aws_iam_role.example.arn
+
+  vpc_config {
+    subnet_ids = [aws_subnet.my_cluster_subnet1.id, aws_subnet.my_cluster_subnet2.id]
+  }
 
 
-
-
-} 
+}
   
