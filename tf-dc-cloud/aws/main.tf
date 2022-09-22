@@ -16,9 +16,12 @@ provider "aws" {
 resource "aws_vpc" "main" {
   cidr_block       = "172.16.0.0/16"
   instance_tenancy = "default"
-
+  # required by AWS https://docs.aws.amazon.com/eks/latest/userguide/creating-a-vpc.html
+  enable_dns_hostnames = true
+  enable_dns_support = true
   tags = {
     Name = "main"
+    "kubernetes.io/cluster/my-cluster" = "owned"
   }
 }
 
@@ -165,35 +168,35 @@ resource "aws_eks_cluster" "dev-cluster" {
 
 }
 
-# resource "aws_iam_role" "role_nodegroup" {
-#   name = "eks-node-group-example"
+resource "aws_iam_role" "role_nodegroup" {
+  name = "eks-node-group-example"
 
-#   assume_role_policy = jsonencode({
-#     Statement = [{
-#       Action = "sts:AssumeRole"
-#       Effect = "Allow"
-#       Principal = {
-#         Service = "ec2.amazonaws.com"
-#       }
-#     }]
-#     Version = "2012-10-17"
-#   })
-# }
+  assume_role_policy = jsonencode({
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "ec2.amazonaws.com"
+      }
+    }]
+    Version = "2012-10-17"
+  })
+}
 
-# resource "aws_iam_role_policy_attachment" "example-AmazonEKSWorkerNodePolicy" {
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-#   role       = aws_iam_role.role_nodegroup.name
-# }
+  resource "aws_iam_role_policy_attachment" "example-AmazonEKSWorkerNodePolicy" {
+    policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+    role       = aws_iam_role.role_nodegroup.name
+  }
 
-# resource "aws_iam_role_policy_attachment" "example-AmazonEKS_CNI_Policy" {
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-#   role       = aws_iam_role.role_nodegroup.name
-# }
+  resource "aws_iam_role_policy_attachment" "example-AmazonEKS_CNI_Policy" {
+    policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+    role       = aws_iam_role.role_nodegroup.name
+  }
 
-# resource "aws_iam_role_policy_attachment" "example-AmazonEC2ContainerRegistryReadOnly" {
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-#   role       = aws_iam_role.role_nodegroup.name
-# }
+  resource "aws_iam_role_policy_attachment" "example-AmazonEC2ContainerRegistryReadOnly" {
+    policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+    role       = aws_iam_role.role_nodegroup.name
+  }
 
 # resource "aws_eks_node_group" "example" {
 #   cluster_name    = aws_eks_cluster.dev-cluster.name
