@@ -1,0 +1,5 @@
+poetry
+scaffold
+bandit
+ipython
+tox
