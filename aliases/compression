@@ -1,2 +1,2 @@
 alias tarzstd="tar c -I\"zstd -19 -T0\" -vf"
-alias tarbz2="tar c -I-Ipbzip2 -vf"
+alias tarbz2="tar c -Ipbzip2 -vf"
