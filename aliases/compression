@@ -1,0 +1,2 @@
+alias tarzstd="tar c -I\"zstd -19 -T0\" -vf"
+
