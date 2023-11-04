@@ -1,2 +1,4 @@
 alias tarzstd="tar c -I\"zstd -19 -T0\" -vf"
 alias tarbz2="tar c -Ipbzip2 -vf"
+alias targz="time tar c -Ipigz -vf"
+alias tarxz="time tar c -I\"pxz -9\" -vf"
