@@ -2,3 +2,15 @@ alias tarzstd="tar c -I\"zstd -19 -T0\" -vf"
 alias tarbz2="tar c -Ipbzip2 -vf"
 alias targz="time tar c -Ipigz -vf"
 alias tarxz="time tar c -I\"pxz -9\" -vf"
+
+tardirrm() {
+    [ -z $1 ] && echo "You need to pass directory name" && return 1
+    [ -f "$1.tar" ] && echo "$1".tar exists && return 1
+    ! [ -d "$1" ] && echo "$1" does not exist && return 1
+    echo "Checking space:"
+    du -sh "$1"
+    find "$1" >"$1".files.txt
+    echo "Compressing $1"
+    tar cf "$1.tar" "$1" && rm -rf "$1"
+    ls -lah "$1.tar"
+}
